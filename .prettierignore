@@ -1,0 +1,8 @@
+node_modules
+.next
+.npm-cache
+public/pdf.worker.min.mjs
+package-lock.json
+artifacts
+playwright-report
+test-results
