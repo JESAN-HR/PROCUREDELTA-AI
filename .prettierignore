@@ -6,3 +6,5 @@ package-lock.json
 artifacts
 playwright-report
 test-results
+
+public/ocr

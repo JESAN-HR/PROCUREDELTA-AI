@@ -1,6 +1,13 @@
 import { z } from "zod";
+import {
+  enrichExtraction,
+  resolveAmendments,
+  explanationFor,
+} from "./intelligence";
 export const pageSchema = z.object({
   text: z.string(),
+  ocr: z.boolean().optional(),
+  confidence: z.number().min(0).max(100).optional(),
   page: z.number().int().positive().optional(),
 });
 export const documentSchema = z.object({
@@ -22,6 +29,7 @@ export const labels = {
   procuringAuthority: "Procuring authority",
   publicationDate: "Publication date",
   submissionDeadline: "Submission deadline",
+  submissionTime: "Submission cutoff time",
   estimatedBudget: "Estimated budget",
   currency: "Currency",
   eligibilityRequirements: "Eligibility requirements",
@@ -30,9 +38,18 @@ export const labels = {
   securityDeposit: "Security deposit",
   paymentTerms: "Payment terms",
   documentReferences: "Document references",
+  otherConditions: "Other clause changes",
+  deliveryPeriod: "Delivery period",
+  comparableContract: "Comparable contract threshold",
+  certificationRequirements: "Certification requirements",
 } as const;
 export type Field = keyof typeof labels;
-export type Evidence = { documentId: string; quote: string; page?: number };
+export type Evidence = {
+  documentId: string;
+  quote: string;
+  page?: number;
+  clause?: string;
+};
 export type Fact = {
   value: string;
   normalized: string;
@@ -42,6 +59,7 @@ export type Fact = {
 export type Extraction = {
   fields: Partial<Record<Field, Fact>>;
   extractionWarnings: string[];
+  reviewPassages?: Evidence[];
 };
 export type Change = {
   field: Field;
@@ -49,6 +67,8 @@ export type Change = {
   before?: Fact;
   after?: Fact;
   explanation: string;
+  instruction?: Fact;
+  method?: string;
 };
 export type Report = {
   id: string;
@@ -59,6 +79,11 @@ export type Report = {
   revisedFields: Extraction;
   changes: Change[];
   completeReplacement: boolean;
+  mode?: "brief" | "comparison";
+  effectiveFields?: Extraction;
+  carriedFields?: Field[];
+  unresolved?: string[];
+  reviewed?: boolean;
 };
 const patterns: Record<Field, RegExp> = {
   tenderTitle: /^(?:tender title|procurement|title)\s*:\s*(.+)$/i,
@@ -68,6 +93,7 @@ const patterns: Record<Field, RegExp> = {
   publicationDate: /^(?:publication date|published)\s*:\s*(.+)$/i,
   submissionDeadline:
     /^(?:submission deadline|deadline|closing date)\s*:\s*(.+)$/i,
+  submissionTime: /^(?:submission time|closing time)\s*:\s*(.+)$/i,
   estimatedBudget: /^(?:estimated budget|budget|estimated cost)\s*:\s*(.+)$/i,
   currency: /^currency\s*:\s*(.+)$/i,
   eligibilityRequirements:
@@ -78,6 +104,11 @@ const patterns: Record<Field, RegExp> = {
     /^(?:technical requirements|specifications)\s*:\s*(.+)$/i,
   securityDeposit: /^(?:security deposit|bid security)\s*:\s*(.+)$/i,
   paymentTerms: /^payment terms\s*:\s*(.+)$/i,
+  otherConditions: /^other conditions\s*:\s*(.+)$/i,
+  deliveryPeriod: /^(?:delivery period|delivery)\s*:\s*(.+)$/i,
+  comparableContract:
+    /^(?:comparable contract|contract threshold)\s*:\s*(.+)$/i,
+  certificationRequirements: /^(?:certification|certifications)\s*:\s*(.+)$/i,
   documentReferences: /^(?:document references|references|amends)\s*:\s*(.+)$/i,
 };
 export function normalize(field: Field, value: string): string {
@@ -88,7 +119,10 @@ export function normalize(field: Field, value: string): string {
     .toLowerCase();
   if (field === "submissionDeadline" || field === "publicationDate") {
     const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(clean);
-    const named = /^([a-z]+) (\d{1,2}),? (\d{4})$/.exec(clean);
+    const dmy = /^(\d{1,2}) ([a-z]+) (\d{4})$/.exec(clean);
+    const named =
+      /^([a-z]+) (\d{1,2}),? (\d{4})$/.exec(clean) ??
+      (dmy ? [dmy[0], dmy[2], dmy[1], dmy[3]] : null);
     const months = [
       "january",
       "february",
@@ -178,7 +212,10 @@ export function extract(doc: Document): Extraction {
     warnings.push(
       "Text was corrected by a user. PDF page attribution has been cleared.",
     );
-  return { fields, extractionWarnings: [...new Set(warnings)] };
+  return enrichExtraction(doc, {
+    fields,
+    extractionWarnings: [...new Set(warnings)],
+  });
 }
 export function compare(
   original: Document,
@@ -245,14 +282,30 @@ export function compare(
     }
     changes.push({ field, kind, before, after, explanation });
   }
+  const resolved = resolveAmendments(
+    original,
+    revised,
+    originalFields,
+    revisedFields,
+    changes,
+    completeReplacement,
+  );
   return {
+    ...resolved,
+    mode: "comparison",
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     original,
     revised,
     originalFields,
     revisedFields,
-    changes,
+    changes: resolved.changes.map((c) => ({
+      ...c,
+      explanation:
+        c.kind === "Modified"
+          ? explanationFor(c.field, c.before!, c.after!, c.explanation)
+          : c.explanation,
+    })),
     completeReplacement,
   };
 }
@@ -272,3 +325,25 @@ export const originalDemo =
 export const revisedDemo = originalDemo
   .replace("November 10", "November 17")
   .replace("two years", "three years");
+
+export function createBrief(doc: Document): Report {
+  documentSchema.parse(doc);
+  const text = doc.pages.map((p) => p.text).join("\n");
+  if (!text.trim() || text.length > 150000)
+    throw new Error("Document must contain 1–150,000 characters.");
+  const fields = extract(doc);
+  return {
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    original: doc,
+    revised: doc,
+    originalFields: fields,
+    revisedFields: fields,
+    effectiveFields: fields,
+    changes: [],
+    completeReplacement: false,
+    mode: "brief",
+    carriedFields: [],
+    unresolved: [],
+  };
+}

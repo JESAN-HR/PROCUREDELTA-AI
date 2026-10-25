@@ -162,3 +162,123 @@ test("core processing needs no external requests and corrections clear page cita
   ).toBeVisible();
   expect(external).toEqual([]);
 });
+
+test("messy PDF resolves actual amendments and exports a reviewed public copy", async ({
+  page,
+}) => {
+  await page.goto("/analyze");
+  await page
+    .getByLabel("Original PDF")
+    .setInputFiles(path.resolve("public/fixtures/messy-original-tender.pdf"));
+  await expect(
+    page.getByRole("textbox", { name: "Original text" }),
+  ).toHaveValue(/two/);
+  await page
+    .getByLabel("Revised PDF")
+    .setInputFiles(path.resolve("public/fixtures/messy-amendment-notice.pdf"));
+  await expect(page.getByRole("textbox", { name: "Revised text" })).toHaveValue(
+    /75,000/,
+  );
+  await page
+    .getByRole("button", { name: "Analyze changes", exact: true })
+    .click();
+  await expect(page).toHaveURL(/comparison/);
+  await expect(page.locator(".change-card")).toHaveCount(6);
+  await expect(
+    page.getByText("Bid security increased by BDT 25,000.", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Comparable contract threshold",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", {
+      name: "Download reviewed public report (HTML)",
+    }),
+  ).toBeDisabled();
+  await page
+    .getByRole("checkbox", {
+      name: "I reviewed the source evidence",
+      exact: false,
+    })
+    .check();
+  const pending = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Download reviewed public report (HTML)" })
+    .click();
+  expect((await pending).suggestedFilename()).toMatch(/\.html$/);
+  await page.reload();
+  await expect(page.locator(".change-card")).toHaveCount(6);
+});
+test("single notice brief, Bangla headings, searchable procurement timeline", async ({
+  page,
+}) => {
+  await page.goto("/analyze");
+  await page
+    .getByRole("combobox", { name: "Analysis mode" })
+    .selectOption("brief");
+  await page
+    .getByRole("textbox", { name: "Original text" })
+    .fill(
+      "Tender ID: TEST-2026-11\nTender title: Clinic supplies\nOffers must be received by 8 December 2026.\nBid security: BDT 40,000",
+    );
+  await page.getByRole("button", { name: "Create procurement brief" }).click();
+  await expect(page).toHaveURL(/comparison/);
+  await expect(page.getByText("Single-document brief")).toBeVisible();
+  await page.getByRole("button", { name: "বাংলা শিরোনাম" }).click();
+  await expect(
+    page.getByRole("heading", { name: "দরপত্রের সারসংক্ষেপ" }),
+  ).toBeVisible();
+  await page.goto("/history");
+  await page
+    .getByRole("textbox", { name: "Search saved records" })
+    .fill("TEST-2026-11");
+  await expect(page.locator(".history-row")).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { name: "Procurement timelines" }),
+  ).toBeVisible();
+});
+test("scanned PDF OCR runs locally with no external requests", async ({
+  page,
+}) => {
+  test.setTimeout(120000);
+  const external: string[] = [];
+  await page.route("**/*", (route) => {
+    if (!route.request().url().startsWith("http://127.0.0.1:3000")) {
+      external.push(route.request().url());
+      return route.abort();
+    }
+    return route.continue();
+  });
+  await page.goto("/analyze");
+  await page
+    .getByRole("combobox", { name: "Analysis mode" })
+    .selectOption("brief");
+  await page
+    .getByRole("checkbox", {
+      name: "Enable local English + Bangla OCR",
+      exact: false,
+    })
+    .check();
+  await page
+    .getByLabel("Original PDF")
+    .setInputFiles(path.resolve("public/fixtures/scanned-fictional.pdf"));
+  await expect(
+    page.getByRole("textbox", { name: "Original text" }),
+  ).toHaveValue(/November 10, 2026/, { timeout: 90000 });
+  await expect(
+    page.getByText("OCR-derived text.", { exact: false }).first(),
+  ).toBeVisible();
+  expect(external).toEqual([]);
+  await page.getByRole("button", { name: "Create procurement brief" }).click();
+  await expect(page).toHaveURL(/comparison/);
+  await expect(
+    page
+      .getByText("OCR-derived text: page locations identify scanned pages;", {
+        exact: false,
+      })
+      .first(),
+  ).toBeVisible();
+});

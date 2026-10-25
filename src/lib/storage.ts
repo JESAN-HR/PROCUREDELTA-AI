@@ -13,6 +13,7 @@ const evidenceSchema = z.object({
   documentId: z.string(),
   quote: z.string(),
   page: z.number().int().positive().optional(),
+  clause: z.string().optional(),
 });
 const factSchema = z.object({
   value: z.string(),
@@ -23,6 +24,7 @@ const factSchema = z.object({
 const extractionSchema = z.object({
   fields: z.partialRecord(fieldSchema, factSchema),
   extractionWarnings: z.array(z.string()),
+  reviewPassages: z.array(evidenceSchema).optional(),
 });
 const reportSchema = z.object({
   id: z.string(),
@@ -38,9 +40,16 @@ const reportSchema = z.object({
       before: factSchema.optional(),
       after: factSchema.optional(),
       explanation: z.string(),
+      instruction: factSchema.optional(),
+      method: z.string().optional(),
     }),
   ),
   completeReplacement: z.boolean(),
+  mode: z.enum(["brief", "comparison"]).optional(),
+  effectiveFields: extractionSchema.optional(),
+  carriedFields: z.array(fieldSchema).optional(),
+  unresolved: z.array(z.string()).optional(),
+  reviewed: z.boolean().optional(),
 });
 const schema = z.object({
   documents: z.array(documentSchema),

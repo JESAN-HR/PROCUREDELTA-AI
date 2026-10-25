@@ -9,6 +9,7 @@ export default tseslint.config(
       "node_modules/**",
       ".npm-cache/**",
       "public/pdf.worker.min.mjs",
+      "public/ocr/**",
       "playwright-report/**",
       "test-results/**",
       "next-env.d.ts",

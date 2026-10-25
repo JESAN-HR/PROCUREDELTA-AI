@@ -1,39 +1,42 @@
 # Actual validation results
 
-Verified October 21, 2026, on Windows with Node.js 24.22.0, Next.js 16.4.2, PDF.js 6.4.299, Vitest 5.0.5, and Playwright Chromium.
+Updated October 25, 2026. Results below were observed during this upgrade on Windows with Node.js 24.22.0, Next.js 16.4.2, PDF.js 6.4.299, Vitest 5.0.5 and Playwright Chromium. They are recorded runs, not a guarantee for every environment or document.
 
-| Check                         | Actual result                                                                                               |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| npm run lint                  | Passed; no warnings or errors                                                                               |
-| npm run typecheck             | Passed                                                                                                      |
-| npm test                      | 12 tests passed                                                                                             |
-| npm run test:e2e              | 7 tests passed in 17.0 seconds                                                                              |
-| npm run build                 | Passed; all ten public routes generated plus the optional API route                                         |
-| npm audit --cache .npm-cache  | 0 known vulnerabilities                                                                                     |
-| node scripts/fixtures.mjs     | Generated fictional original/revised PDFs and text, unchanged/missing/conflicting/invalid/textless fixtures |
-| node scripts/visual-check.mjs | Desktop analyzer, report, and mobile screenshots captured; no browser page errors                           |
-| HTTP localhost response       | 200                                                                                                         |
+| Command | Observed result |
+| --- | --- |
+| npm run lint | Passed after fixing a browser-global reference in the diagnostic script |
+| npm run typecheck | Passed |
+| npm test | 27 tests passed across 3 files |
+| npm run test:e2e | 10 tests passed in 22.7 seconds |
+| npm run build | Passed; ten public routes and optional AI API generated |
+| npm audit --cache .npm-cache | 0 known vulnerabilities reported |
+| npm run setup:ocr | Installed local English/Bangla recognition assets |
+| node scripts/check-messy.mjs | Six expected findings, no unresolved findings in the controlled fictional pair |
+| node scripts/visual-check.mjs | Desktop/mobile screenshots captured; no page or console errors |
 
-## Coverage
+The first production build compiled but Windows sandbox permissions blocked a generated route directory. Rerunning with approved filesystem access succeeded.
 
-Unit tests verify date and numeric normalization, seven-day deadline and one-year experience deltas, unchanged input, partial-amendment uncertainty, confirmed replacement additions/removals, unknowns, conflicting values, exact quotation and page integrity, empty input, unsafe URL schemes, persistence, corrupt storage, and invalid/oversized PDF input.
+## What was exercised
 
-Browser tests visit all ten routes; run the fictional demo; inspect exact evidence; reload saved reports; correct inputs; search history; delete documents and related reports; extract actual PDFs with page references; reject invalid PDFs; return an honest 503 from the unconfigured AI endpoint; verify a 390px mobile viewport; explain textless PDF/OCR limitations; and confirm that PDF processing and comparison make no external requests. Editing extracted PDF text is verified to remove page citations.
+Unit coverage includes normalization, dates, experience, missing/conflicting values, explicit additions/removals, partial amendments, old-value mismatch, mismatched tender identifiers, time-only amendments, quoted replacements, Bengali labels/digits, exact evidence, persistence, input validation, AI output validation, and HTML export escaping/review requirements.
 
-## Fixes made during verification
+Browser coverage includes all ten public routes, actual PDF extraction and page citations, demo analysis, correction, history, deletion, invalid PDF errors, no-key AI behavior, mobile layout, processing without external requests, six messy-PDF changes, reviewed HTML download, single-notice briefs, Bangla headings and timeline search. A real Tesseract OCR test recognized a generated image-only English PDF with external requests blocked. OCR assets must first be installed using npm run setup:ocr to reproduce this test.
 
-The initial PDF.js API option had been removed and was corrected. Initial dependency advisories were resolved by upgrading PDF.js/Vitest and replacing the Next-specific lint dependency chain with direct lint plugins. Browser tests initially had ambiguous selectors for repeated citations and the Next route announcer; selectors were narrowed and the entire suite passed. Lint's browser-hydration rule has one documented, narrowly scoped exemption for loading localStorage after server rendering.
+Editing PDF text clears page citations because edited text is no longer the original page extraction.
 
-## Verification boundaries
+The messy pair correctly identifies deadline, experience, security deposit, delivery, certification removal and comparable-contract addition, while retaining unchanged budget/payment context. See EVALUATION.md for the fixture-specific evaluation and its limits.
 
-No real Gemini request was made; no key was provided or needed. Live cloud structured output, semantic quality, and Bangla output are not verified. No OCR, public hosting, authenticated multi-user service, or official-source verification is claimed. Password-protected PDFs have explicit error handling but were not exercised with an encrypted fixture. Print controls and print styles are implemented; physical printing and individual browser print-dialog settings were not automated.
+## Boundaries
 
-Screenshots: artifacts/analyzer-desktop.png, artifacts/report-desktop.png, artifacts/analyzer-mobile.png.
+- Optional Gemini and Ollama adapters were implemented, but live model inference was not run. Schema and quotation-validation tests do not establish model accuracy.
+- OCR was verified on clear English print. No broad noisy-scan or Bangla OCR accuracy claim is made.
+- The parser was developed against the fictional messy pair; this is not an independent real-world accuracy benchmark.
+- Bangla field headings and limited labeled extraction work; full document translation is not implemented.
+- No public deployment, multi-user database, source-authenticity verification or cumulative amendment consolidation was tested or claimed.
+- Password-protected PDF handling exists but was not exercised with an encrypted fixture. Physical printing was not automated.
 
-## Commands executed
+## Reproduce
 
-Dependency setup: npm install; patched PDF.js/Vitest installation; direct ESLint plugin and Prettier installation; npm uninstall eslint-config-next; node scripts/copy-worker.mjs; npx playwright install chromium.
+Run npm install, npm run setup:ocr, and npx playwright install chromium. Run npm run lint, npm run typecheck, npm test and npm run build. Start npm run dev, then run npm run test:e2e in a second terminal. The browser tests expect http://127.0.0.1:3000.
 
-Verification: node scripts/fixtures.mjs; npm run lint; npm run typecheck; npm test; npm run build; npm run dev; npm run test:e2e; node scripts/visual-check.mjs; npm audit --cache .npm-cache; HTTP localhost request. Source formatted with npx prettier --write.
-
-The sandbox initially blocked npm registry access and the Vitest bundler's ancestor-directory resolution. These commands were rerun with approved access. Final tests passed outside that restriction. An offline npm audit was not used as security evidence; the final online audit above was used.
+Screenshots are in artifacts/analyzer-desktop.png, artifacts/report-desktop.png, artifacts/analyzer-mobile.png and artifacts/messy-report.png. Full local Windows/Ubuntu setup and user instructions are in README.md.

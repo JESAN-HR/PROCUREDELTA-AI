@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "postinstall": "node scripts/copy-worker.mjs"
+    "postinstall": "node scripts/copy-worker.mjs",
+    "setup:ocr": "node scripts/prepare-ocr.mjs"
   },
   "dependencies": {
     "diff": "^8.0.0",
@@ -20,6 +21,7 @@
     "pdfjs-dist": "^6.4.299",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "tesseract.js": "^7.0.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {

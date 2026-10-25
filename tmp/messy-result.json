@@ -1,0 +1,681 @@
+{
+  "id": "677c4b29-409a-4542-8a85-c633308c3f1c",
+  "createdAt": "2026-10-23T14:50:55.991Z",
+  "original": {
+    "id": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+    "title": "messy-original-tender.pdf",
+    "authority": "",
+    "url": "",
+    "pages": [
+      {
+        "text": "FICTIONAL TEST DOCUMENT - NOT AN OFFICIAL PROCUREMENT RECORD \n\nNORTH DELTA MUNICIPAL WORKS UNIT (FICTIONAL) \n\nFile: ND/MW/26-041   |   Procurement section / mechanical works\nORIGINAL NOTICE | Synthetic data for parser testing only   Page 1 \n\nINVITATION FOR SEALED OFFERS\nSupply, delivery and commissioning of road-maintenance equipment \n\nNotice circulated on 20 October 2026. The Municipal Works Unit invites offers under procurement reference \n\nND-MW-2026-041 . This notice, the schedule on page 2 and the instructions below are to be read together. \n\nItem / lot   Description and minimum scope   Quantity\nLot 01 / A   Vibratory road compactors, including operating manuals, initial training and\ndelivery to the municipal depot.\n02 units\nLot 01 / B   Consumables and standard service kit for the equipment above. This is included\nin the quoted lot price.\n01 set \n\n1. RECEIPT AND OPENING OF OFFERS\nCompleted offers must reach the receiving desk   no later than 14:00 hours on 10 November 2026   (Bangladesh local\ntime, UTC+06:00). The public opening will take place at 14:30 hours on that same date. Documents received after the\nclosing time will be returned unopened.\n2. PARTICIPATION AND EXPERIENCE\nSuppliers must hold current trade registration and tax clearance. A bidder shall demonstrate   not less than two (2) years \n\nof experience supplying comparable road-maintenance machinery. Joint ventures are permitted, provided the lead\nmember accepts responsibility for delivery and warranty support.\nA manufacturer authorization letter is required. Each bidder shall also hold a valid   ISO 9001 certificate   at the date of\nsubmission. Copies should be attached in the technical envelope, not included in the price schedule. \n\nSee page 2 for security, delivery, financial conditions and the document checklist. The notice publication date is not the deadline\nfor submitting offers.",
+        "page": 1
+      },
+      {
+        "text": "FICTIONAL TEST DOCUMENT - NOT AN OFFICIAL PROCUREMENT RECORD \n\nNORTH DELTA MUNICIPAL WORKS UNIT (FICTIONAL) \n\nFile: ND/MW/26-041   |   Procurement section / mechanical works\nORIGINAL NOTICE / CONTINUED | Synthetic data for parser testing only   Page 2 \n\nSCHEDULE B - FINANCIAL AND DELIVERY CONDITIONS \n\nClause   Requirement   Notes / cross-reference\nB.1   The indicative allocation for the entire lot is BDT 2,500,000.   This is an estimate, not a disclosed winning\nbid.\nB.2   Enclose bid security of BDT 50,000, valid for 90 days after\nclosing.\nBank instrument in a separate sealed\nenvelope.\nB.3   Complete delivery within 45 calendar days of the purchase\norder.\nDelivery period starts on the order date, not\nthe publication date.\nB.4   Payment will be made within 30 days after acceptance of the\ndelivered goods.\nAcceptance follows inspection and\ncommissioning. \n\n3. TECHNICAL SUPPORT AND DOCUMENT CHECKLIST \n\nTechnical envelope \n\n- Product specification sheets\n- Manufacturer authorization\n- Trade and tax documents\n- Experience records\n- ISO 9001 certificate \n\nCommercial envelope \n\n- Signed price schedule\n- Bid security instrument\n- Proposed delivery programme\nThe technical and commercial envelopes must be\nseparately sealed.\n4. INTERPRETATION OF SUBSEQUENT NOTICES\nAny subsequently issued corrigendum must be read with this invitation. A corrigendum may replace a specific clause\nwithout reproducing the entire notice. Unless expressly changed, the other conditions continue to apply. \n\nAdministrative note: questions may be submitted before 03 November 2026. This enquiry date is separate from the offer closing\ndate. No contact address in this fictional notice represents a real institution.",
+        "page": 2
+      }
+    ],
+    "kind": "pdf",
+    "edited": false
+  },
+  "revised": {
+    "id": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+    "title": "messy-amendment-notice.pdf",
+    "authority": "",
+    "url": "",
+    "pages": [
+      {
+        "text": "FICTIONAL TEST DOCUMENT - NOT AN OFFICIAL PROCUREMENT RECORD \n\nNORTH DELTA MUNICIPAL WORKS UNIT (FICTIONAL) \n\nFile: ND/MW/26-041   |   Procurement section / mechanical works\nCORRIGENDUM NO. 01 | Synthetic data for parser testing only   Page 1 \n\nCORRIGENDUM / AMENDMENT NOTICE\nReference ND-MW-2026-041, issued 28 October 2026 \n\nThis notice amends the invitation dated 20 October 2026 for road-maintenance equipment. It is   not a complete\nreplacement tender . Apply the substitutions below to the referenced clauses. All provisions not expressly amended\nremain unchanged. \n\nReference   Existing wording / figure   Read instead / operative revision\nPage 1, clause 1   10 November 2026, at 14:00 hours   17 November 2026, at 14:00 hours. Opening will follow at\n14:30 hours on the revised closing date.\nPage 1, clause 2   not less than two (2) years   not less than three (3) years of comparable supply\nexperience\nPage 2, B.2   BDT 50,000   BDT 75,000. The security validity period remains 90 days\nafter closing.\nPage 2, B.3   within 45 calendar days   within 60 calendar days of the purchase order \n\nADDITIONAL INSTRUCTIONS TO BIDDERS\n(a) Insert the following condition after the experience provision:   At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate. This amount is a qualification\nthreshold, not a revision to the procurement allocation.\n(b) Delete the requirement to hold an   ISO 9001 certificate , including its corresponding checklist entry. The requirements\nfor trade registration, tax clearance and manufacturer authorization are retained.\n(c) For avoidance of doubt, the indicative allocation remains   BDT 2,500,000 . The scope, quantities, payment terms and\njoint-venture permission are unchanged. Those clauses are not reproduced in full here. \n\nRead both documents together. Historical dates and figures in the middle column above identify the text being replaced; they are\nnot alternative current requirements.",
+        "page": 1
+      }
+    ],
+    "kind": "pdf",
+    "edited": false
+  },
+  "originalFields": {
+    "fields": {
+      "tenderIdentifier": {
+        "value": "ND-MW-2026-041",
+        "normalized": "nd-mw-2026-041",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "procurement reference \n\nND-MW-2026-041",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "tenderTitle": {
+        "value": "Supply, delivery and commissioning of road-maintenance equipment",
+        "normalized": "supply, delivery and commissioning of road-maintenance equipment",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Supply, delivery and commissioning of road-maintenance equipment ",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "publicationDate": {
+        "value": "20 October 2026",
+        "normalized": "2026-10-20",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Notice circulated on 20 October 2026",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "submissionDeadline": {
+        "value": "10 November 2026",
+        "normalized": "2026-11-10",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "no later than 14:00 hours on 10 November 2026",
+            "page": 1,
+            "clause": "1."
+          }
+        ],
+        "conflict": false
+      },
+      "submissionTime": {
+        "value": "14:00 hours",
+        "normalized": "14:00",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "no later than 14:00 hours",
+            "page": 1,
+            "clause": "1."
+          }
+        ],
+        "conflict": false
+      },
+      "experienceRequirements": {
+        "value": "two (2) years",
+        "normalized": "2 years",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "demonstrate   not less than two (2) years",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "certificationRequirements": {
+        "value": "ISO 9001 certificate",
+        "normalized": "iso 9001 certificate",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "ISO 9001 certificate",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "eligibilityRequirements": {
+        "value": "Suppliers must hold current trade registration and tax clearance.",
+        "normalized": "suppliers must hold current trade registration and tax clearance",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Suppliers must hold current trade registration and tax clearance.",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "estimatedBudget": {
+        "value": "BDT 2,500,000",
+        "normalized": "bdt 2500000",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "indicative allocation for the entire lot is BDT 2,500,000",
+            "page": 2,
+            "clause": "B.1"
+          }
+        ],
+        "conflict": false
+      },
+      "securityDeposit": {
+        "value": "BDT 50,000",
+        "normalized": "bdt 50000",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "bid security of BDT 50,000",
+            "page": 2,
+            "clause": "B.2"
+          }
+        ],
+        "conflict": false
+      },
+      "deliveryPeriod": {
+        "value": "45 calendar days",
+        "normalized": "45 calendar days",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Complete delivery within 45 calendar days",
+            "page": 2,
+            "clause": "B.3"
+          }
+        ],
+        "conflict": false
+      },
+      "paymentTerms": {
+        "value": "Payment will be made within 30 days after acceptance of the\ndelivered goods.",
+        "normalized": "payment will be made within 30 days after acceptance of the delivered goods",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Payment will be made within 30 days after acceptance of the\ndelivered goods.",
+            "page": 2,
+            "clause": "B.4"
+          }
+        ],
+        "conflict": false
+      }
+    },
+    "extractionWarnings": [
+      "Pattern-assisted extraction is not a legal interpretation. Unrecognized clauses may contain additional conditions."
+    ],
+    "reviewPassages": []
+  },
+  "revisedFields": {
+    "fields": {
+      "tenderIdentifier": {
+        "value": "ND-MW-2026-041",
+        "normalized": "nd-mw-2026-041",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Reference ND-MW-2026-041",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "publicationDate": {
+        "value": "28 October 2026",
+        "normalized": "2026-10-28",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "issued 28 October 2026",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "estimatedBudget": {
+        "value": "BDT 2,500,000",
+        "normalized": "bdt 2500000",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "indicative allocation remains   BDT 2,500,000",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "experienceRequirements": {
+        "value": "two (2) years | three (3) years",
+        "normalized": "2 years",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "not less than two (2) years",
+            "page": 1
+          },
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "not less than three (3) years",
+            "page": 1
+          }
+        ],
+        "conflict": true
+      },
+      "certificationRequirements": {
+        "value": "ISO 9001 certificate",
+        "normalized": "iso 9001 certificate",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "ISO 9001 certificate",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "comparableContract": {
+        "value": "At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate",
+        "normalized": "at least one completed comparable supply contract with a value of bdt 1,000,000 or more must be evidenced by an acceptance certificate",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      }
+    },
+    "extractionWarnings": [
+      "Submission deadline was not identified.",
+      "Multiple possible experienceRequirements values; inspect source context.",
+      "Pattern-assisted extraction is not a legal interpretation. Unrecognized clauses may contain additional conditions."
+    ],
+    "reviewPassages": []
+  },
+  "changes": [
+    {
+      "field": "submissionDeadline",
+      "kind": "Modified",
+      "before": {
+        "value": "10 November 2026",
+        "normalized": "2026-11-10",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "no later than 14:00 hours on 10 November 2026",
+            "page": 1,
+            "clause": "1."
+          }
+        ],
+        "conflict": false
+      },
+      "after": {
+        "value": "17 November 2026",
+        "normalized": "2026-11-17",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 1   10 November 2026, at 14:00 hours   17 November 2026, at 14:00 hours. Opening will follow at\n14:30 hours on the revised closing date.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "Deadline extended by 7 days. Bidders have 7 more calendar days; verify the stated time and timezone.",
+      "instruction": {
+        "value": "17 November 2026",
+        "normalized": "2026-11-17",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 1   10 November 2026, at 14:00 hours   17 November 2026, at 14:00 hours. Opening will follow at\n14:30 hours on the revised closing date.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Clause 1: old value matched to original"
+    },
+    {
+      "field": "experienceRequirements",
+      "kind": "Modified",
+      "before": {
+        "value": "two (2) years",
+        "normalized": "2 years",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "demonstrate   not less than two (2) years",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "after": {
+        "value": "three (3) years",
+        "normalized": "3 years",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 2   not less than two (2) years   not less than three (3) years of comparable supply\nexperience\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "Experience requirement increased by 1 year.",
+      "instruction": {
+        "value": "three (3) years",
+        "normalized": "3 years",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 2   not less than two (2) years   not less than three (3) years of comparable supply\nexperience\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Clause 2: old value matched to original"
+    },
+    {
+      "field": "securityDeposit",
+      "kind": "Modified",
+      "before": {
+        "value": "BDT 50,000",
+        "normalized": "bdt 50000",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "bid security of BDT 50,000",
+            "page": 2,
+            "clause": "B.2"
+          }
+        ],
+        "conflict": false
+      },
+      "after": {
+        "value": "BDT 75,000",
+        "normalized": "bdt 75000",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.2   BDT 50,000   BDT 75,000. The security validity period remains 90 days\nafter closing.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "Bid security increased by BDT 25,000. This changes the amount bidders must provide as security.",
+      "instruction": {
+        "value": "BDT 75,000",
+        "normalized": "bdt 75000",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.2   BDT 50,000   BDT 75,000. The security validity period remains 90 days\nafter closing.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Clause B.2: old value matched to original"
+    },
+    {
+      "field": "deliveryPeriod",
+      "kind": "Modified",
+      "before": {
+        "value": "45 calendar days",
+        "normalized": "45 calendar days",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Complete delivery within 45 calendar days",
+            "page": 2,
+            "clause": "B.3"
+          }
+        ],
+        "conflict": false
+      },
+      "after": {
+        "value": "60 calendar days",
+        "normalized": "60 calendar days",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.3   within 45 calendar days   within 60 calendar days of the purchase order \n\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "Delivery window changed from 45 calendar days to 60 calendar days. Check the trigger date (for example, the purchase order) before calculating a delivery deadline.",
+      "instruction": {
+        "value": "60 calendar days",
+        "normalized": "60 calendar days",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.3   within 45 calendar days   within 60 calendar days of the purchase order \n\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Clause B.3: old value matched to original"
+    },
+    {
+      "field": "certificationRequirements",
+      "kind": "Removed",
+      "before": {
+        "value": "ISO 9001 certificate",
+        "normalized": "iso 9001 certificate",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "ISO 9001 certificate",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "The amendment explicitly removes the ISO 9001 condition. Other eligibility requirements are not removed by this instruction.",
+      "instruction": {
+        "value": "Delete the requirement to hold an   ISO 9001 certificate , including its corresponding checklist entry.",
+        "normalized": "",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Delete the requirement to hold an   ISO 9001 certificate , including its corresponding checklist entry.",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Explicit deletion linked by certification identity"
+    },
+    {
+      "field": "comparableContract",
+      "kind": "Added",
+      "after": {
+        "value": "At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+        "normalized": "at least one completed comparable supply contract with a value of bdt 1,000,000 or more must be evidenced by an acceptance certificate",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Insert the following condition after the experience provision:   At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "explanation": "The amendment adds a comparable-contract qualification. Its contract value is a qualification threshold, not the procurement budget.",
+      "instruction": {
+        "value": "At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+        "normalized": "at least one completed comparable supply contract with a value of bdt 1,000,000 or more must be evidenced by an acceptance certificate",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Insert the following condition after the experience provision:   At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "method": "Explicit addition instruction"
+    }
+  ],
+  "completeReplacement": false,
+  "mode": "comparison",
+  "effectiveFields": {
+    "fields": {
+      "tenderIdentifier": {
+        "value": "ND-MW-2026-041",
+        "normalized": "nd-mw-2026-041",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Reference ND-MW-2026-041",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "tenderTitle": {
+        "value": "Supply, delivery and commissioning of road-maintenance equipment",
+        "normalized": "supply, delivery and commissioning of road-maintenance equipment",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Supply, delivery and commissioning of road-maintenance equipment ",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "publicationDate": {
+        "value": "28 October 2026",
+        "normalized": "2026-10-28",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "issued 28 October 2026",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "submissionDeadline": {
+        "value": "17 November 2026",
+        "normalized": "2026-11-17",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 1   10 November 2026, at 14:00 hours   17 November 2026, at 14:00 hours. Opening will follow at\n14:30 hours on the revised closing date.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "submissionTime": {
+        "value": "14:00 hours",
+        "normalized": "14:00",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 1   10 November 2026, at 14:00 hours   17 November 2026, at 14:00 hours. Opening will follow at\n14:30 hours on the revised closing date.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "experienceRequirements": {
+        "value": "three (3) years",
+        "normalized": "3 years",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 1, clause 2   not less than two (2) years   not less than three (3) years of comparable supply\nexperience\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "eligibilityRequirements": {
+        "value": "Suppliers must hold current trade registration and tax clearance.",
+        "normalized": "suppliers must hold current trade registration and tax clearance",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Suppliers must hold current trade registration and tax clearance.",
+            "page": 1,
+            "clause": "2."
+          }
+        ],
+        "conflict": false
+      },
+      "estimatedBudget": {
+        "value": "BDT 2,500,000",
+        "normalized": "bdt 2500000",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "indicative allocation remains   BDT 2,500,000",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "securityDeposit": {
+        "value": "BDT 75,000",
+        "normalized": "bdt 75000",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.2   BDT 50,000   BDT 75,000. The security validity period remains 90 days\nafter closing.\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "deliveryPeriod": {
+        "value": "60 calendar days",
+        "normalized": "60 calendar days",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Page 2, B.3   within 45 calendar days   within 60 calendar days of the purchase order \n\n",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      },
+      "paymentTerms": {
+        "value": "Payment will be made within 30 days after acceptance of the\ndelivered goods.",
+        "normalized": "payment will be made within 30 days after acceptance of the delivered goods",
+        "evidence": [
+          {
+            "documentId": "5ce9f318-997a-45b9-9e2c-67012b9eb2a3",
+            "quote": "Payment will be made within 30 days after acceptance of the\ndelivered goods.",
+            "page": 2,
+            "clause": "B.4"
+          }
+        ],
+        "conflict": false
+      },
+      "comparableContract": {
+        "value": "At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+        "normalized": "at least one completed comparable supply contract with a value of bdt 1,000,000 or more must be evidenced by an acceptance certificate",
+        "evidence": [
+          {
+            "documentId": "0f3bc0a6-9bab-4e52-b319-83e63f47d430",
+            "quote": "Insert the following condition after the experience provision:   At least one completed comparable supply contract\nwith a value of BDT 1,000,000 or more   must be evidenced by an acceptance certificate.",
+            "page": 1
+          }
+        ],
+        "conflict": false
+      }
+    },
+    "extractionWarnings": [
+      "Unmentioned original conditions are retained under the amendment’s unchanged-terms statement."
+    ]
+  },
+  "carriedFields": [
+    "tenderTitle",
+    "submissionTime",
+    "eligibilityRequirements",
+    "paymentTerms"
+  ],
+  "unresolved": []
+}

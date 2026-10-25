@@ -6,6 +6,32 @@ Compare an original tender with a revised notice, see what changed, and inspect 
 
 **The default installation is free and needs no API key, account, database, credit card, or billing activation.** PDF extraction and rule-based comparison run locally in your browser. Optional cloud AI is disabled by default.
 
+## Updated document-intelligence workflow
+
+The analyzer now supports **single-notice briefs**, English prose and wrapped requirements, clause-linked amendment tables, explicit replacements/deletions/additions, and inherited original conditions. It also detects submission-time changes separately from dates. It remains conservative pattern-assisted processing, not unrestricted language understanding.
+
+Try `public/fixtures/messy-original-tender.pdf` with `public/fixtures/messy-amendment-notice.pdf`, leaving complete replacement unchecked. The browser-tested report identifies six material changes: deadline, experience, security, delivery, a new contract qualification, and removed certification. Budget and payment terms stay unchanged. See [EVALUATION.md](EVALUATION.md) for the measured scope and remaining gaps.
+
+Choose **Single notice brief** in Analysis mode when you have no amendment. History now includes procurement timelines grouped by extracted identifiers, search includes recognized field values, and **Compare another amendment with original** loads the original for another comparison. Timelines are not automatic consolidation of successive amendments.
+
+The brief has a **বাংলা শিরোনাম** toggle for Bengali field headings. Bengali labeled text and digits are supported. This is not full-interface translation or general Bangla NLP. A configured model can optionally be asked for Bangla explanations; that quality is not yet evaluated.
+
+### Optional local OCR setup
+
+For scanned/image-only PDFs, run once while online:
+
+```bash
+npm run setup:ocr
+```
+
+On PowerShell use `npm.cmd run setup:ocr`. This downloads open-source English and Bangla recognition data and copies local worker files. Documents are not uploaded. On this development machine the assets have already been prepared; new installations need this step. Enable **local English + Bangla OCR** in the upload panel before uploading. OCR runs only on pages without extractable text, supports at most 10 pages, and records recognition confidence and page origin. Review every OCR result. Text-based PDFs still support 100 pages.
+
+After setup, OCR uses same-origin assets and can operate without an external service. Language data comes from [Tesseract tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast); generated `public/ocr` assets are ignored by Git. On a fresh deployment run this setup as part of installation if OCR is desired. The English scanned fixture was browser-tested; general Bangla OCR accuracy was not evaluated.
+
+### Reviewed public copies
+
+In a report, inspect evidence and the human-review queue, mark **I reviewed the source evidence**, then download the standalone public HTML report. This file includes source quotations and can be opened without this application or hosted by you. It does not publish automatically and is not a shared hosted database. Human review is recorded as your acknowledgement, not official authentication.
+
 ## Contents
 
 - [Before you begin](#before-you-begin)
@@ -186,7 +212,7 @@ This is the easiest way to learn the software in about one minute.
 3. Read the original and revised text. The original deadline is November 10, 2026, and the experience requirement is two years. The revision uses November 17 and three years.
 4. Click **Analyze changes**. The local engine performs the comparison and saves a report.
 5. On the report, find **Deadline extended by 7 days** and **Experience requirement increased by 1 year**.
-6. Expand **Inspect source evidence** on a finding. Check the exact quoted words. Because this demo loads text, citations correctly say there is no page citation.
+6. Expand **Inspect source evidence** on a finding. Check the exact quoted words. Because this demo loads text, citations correctly say there is no page citation. To challenge the engine, use the messy PDF pair described above.
 7. Open **Overview** to see metrics derived from your saved report. Open **Report history** to reopen it.
 
 To try PDF extraction instead, start another analysis and browse to `public/fixtures/original.pdf` and `public/fixtures/revised.pdf` in the project folder. The findings should include real **Page 1** evidence. The fixture files are fictional, not government records.
@@ -203,14 +229,14 @@ In each panel, either drag a PDF onto the upload area, click to browse for a PDF
 
 Input limits:
 
-| Input                  | Supported limit or behavior                                                |
-| ---------------------- | -------------------------------------------------------------------------- |
-| PDF type               | Text-based `.pdf` with `application/pdf` MIME type and valid PDF signature |
-| PDF size               | Up to 10 MB per file                                                       |
-| PDF length             | Up to 100 pages per file                                                   |
-| Text                   | Up to 150,000 characters per document; cannot be empty                     |
-| Scanned/image-only PDF | OCR is not implemented; provide independently verified text instead        |
-| Password-protected PDF | Upload an unlocked copy that you are authorized to use                     |
+| Input                  | Supported limit or behavior                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| PDF type               | Text-based `.pdf` with `application/pdf` MIME type and valid PDF signature                  |
+| PDF size               | Up to 10 MB per file                                                                        |
+| PDF length             | Up to 100 pages per file                                                                    |
+| Text                   | Up to 150,000 characters per document; cannot be empty                                      |
+| Scanned/image-only PDF | Enable optional local OCR after `npm run setup:ocr`, or provide independently verified text |
+| Password-protected PDF | Upload an unlocked copy that you are authorized to use                                      |
 
 Read the text box after extraction. PDF layouts, tables, and line wrapping can affect the extracted reading order.
 
@@ -226,7 +252,7 @@ These entries do not become extracted document facts. A source URL is user-provi
 
 Fix extraction mistakes in the text box before comparing. Corrections are user edits, not verification by the software. Editing extracted PDF text clears its page citations because the edited text may no longer match the original page. The report keeps a warning about that correction.
 
-Local extraction works best with **one English `label: value` field per line**. Here is a fictional example with the supported fields:
+Local extraction supports selected English prose, clause references, and amendment tables as well as **English `label: value` fields**. Explicit labels remain useful when preparing manually verified text. Here is a fictional example with the supported fields:
 
 ```text
 Tender title: Road maintenance equipment procurement
@@ -333,6 +359,19 @@ Individual report/document deletions take effect immediately. There is no undo. 
 
 ## Optional Gemini AI
 
+Alternatively, an optional **local Ollama adapter** is implemented. Install Ollama and a suitable local model separately, then configure:
+
+```dotenv
+AI_PROVIDER=ollama
+ENABLE_LOCAL_AI=true
+LOCAL_AI_MODEL=your_installed_model_name
+ENABLE_CLOUD_AI=false
+```
+
+Restart the app server. The adapter calls `http://127.0.0.1:11434/api/generate` on the **application server**. On local Windows/Ubuntu this is your computer. Vercel cannot reach Ollama on your personal PC through that loopback address. No model download is automatic; model memory/disk requirements vary. See [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs). No real model run was performed during this update; schema and evidence-rejection behavior are tested, not inference quality.
+
+Model output appears in separate interpretation cards and is not merged into the deterministic report or silently treated as verified facts. The model section detects whether a provider is configured. English/Bangla explanation selection applies to this optional model request.
+
 **Skip this section for normal use.** The default workflow already performs real document extraction and comparison. It does not run a local neural model or fabricate AI responses.
 
 For an operator who already has an eligible Gemini free-tier project **without billing**, optional setup is:
@@ -360,7 +399,7 @@ For an operator who already has an eligible Gemini free-tier project **without b
    ```
 
 3. Restart the server. For production mode, rebuild and restart.
-4. Open a comparison and find **Optional AI interpretation**. Only for fictional or non-sensitive test documents, confirm the consent checkbox and click **Request optional AI analysis**.
+4. Open a comparison and find **Optional model interpretation**. Only for fictional or non-sensitive test documents, confirm the consent checkbox and click **Generate grounded interpretation**.
 
 This sends both document texts to Google; they do not remain local for that request. The optional endpoint accepts at most 50,000 combined text characters. Keys stay server-side: never prefix them with `NEXT_PUBLIC_` or include them in source control.
 
@@ -383,7 +422,7 @@ The app cannot verify your Google project's billing status. Do not enable billin
 | `npm start` cannot find a production build       | Run `npm run build` successfully first, or use `npm run dev` for development.                                                                                                      |
 | PDF worker failed to load                        | Stop the server, run `node scripts/copy-worker.mjs`, restart, and refresh. If dependencies are missing, run `npm ci` first.                                                        |
 | Invalid PDF signature, MIME, or parsing error    | Use a real text-based PDF exported as `.pdf`; renaming a different file to `.pdf` does not convert it. Otherwise paste verified text.                                              |
-| No readable text / scanned PDF                   | OCR is not included. Obtain a text-based version or paste independently verified text.                                                                                             |
+| No readable text / scanned PDF                   | Run `npm run setup:ocr`, enable OCR, and re-upload (up to 10 pages). Otherwise obtain a text-based version or paste verified text.                                                 |
 | Password-protected PDF                           | Obtain an authorized unlocked copy before uploading.                                                                                                                               |
 | File/page/text limit exceeded                    | Use shorter complete versions or relevant extracts. For extracts, leave the complete-replacement checkbox unchecked and verify context separately.                                 |
 | No fields or few changes detected                | Check English labels, line breaks, and extracted ordering. Review the full text diff; the parser does not understand all prose or layouts.                                         |
@@ -404,19 +443,20 @@ Windows PowerShell: `npm.cmd run dev -- --port 3001`. Open [http://127.0.0.1:300
 
 These checks are optional for ordinary users. Run them from the project root. In PowerShell, replace `npm`/`npx` with `npm.cmd`/`npx.cmd` if required.
 
-| Command                         | Purpose                                                                            |
-| ------------------------------- | ---------------------------------------------------------------------------------- |
-| `npm ci`                        | Install lockfile dependencies and prepare the PDF worker.                          |
-| `npm run dev`                   | Start the development server.                                                      |
-| `npm run build`                 | Compile the production application.                                                |
-| `npm start`                     | Serve the existing production build.                                               |
-| `npm run lint`                  | Check code quality and accessibility rules.                                        |
-| `npm run typecheck`             | Check strict TypeScript types.                                                     |
-| `npm test`                      | Run deterministic processing and persistence unit tests.                           |
-| `node scripts/fixtures.mjs`     | Regenerate fictional PDF/text and negative test fixtures.                          |
-| `npm run test:e2e`              | Run Playwright browser tests.                                                      |
-| `node scripts/visual-check.mjs` | Capture screenshots; requires the app running on port 3000 and Chromium installed. |
-| `npm audit`                     | Check current dependency advisories; requires network access.                      |
+| Command                         | Purpose                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| `npm ci`                        | Install lockfile dependencies and prepare the PDF worker.                            |
+| `npm run setup:ocr`             | Install local English/Bangla OCR assets once; needs internet for language downloads. |
+| `npm run dev`                   | Start the development server.                                                        |
+| `npm run build`                 | Compile the production application.                                                  |
+| `npm start`                     | Serve the existing production build.                                                 |
+| `npm run lint`                  | Check code quality and accessibility rules.                                          |
+| `npm run typecheck`             | Check strict TypeScript types.                                                       |
+| `npm test`                      | Run deterministic processing and persistence unit tests.                             |
+| `node scripts/fixtures.mjs`     | Regenerate fictional PDF/text and negative test fixtures.                            |
+| `npm run test:e2e`              | Run Playwright browser tests.                                                        |
+| `node scripts/visual-check.mjs` | Capture screenshots; requires the app running on port 3000 and Chromium installed.   |
+| `npm audit`                     | Check current dependency advisories; requires network access.                        |
 
 Before running browser tests, install the test browser:
 
@@ -436,7 +476,7 @@ npm run test:e2e
 
 The Ubuntu browser-dependency installation may request administrator access for system packages. Browser tests use `http://127.0.0.1:3000` and start the development server automatically if it is not already running. Do not point tests at a different application on that port.
 
-The recorded build verification passed 12 unit tests, 7 browser tests, lint, typecheck, and production build on Windows. These are historical results, not a claim that tests were run on your machine. See [TEST_RESULTS.md](TEST_RESULTS.md) for exact scope and limitations.
+The upgraded build passed 27 unit tests and 10 browser tests, plus lint, typecheck and production build. Validation and the messy/OCR evaluation are recorded in TEST_RESULTS.md and EVALUATION.md. These are historical results, not a claim that tests were run on your machine. See [TEST_RESULTS.md](TEST_RESULTS.md) for exact scope and limitations.
 
 ## Project structure and further documentation
 
@@ -465,3 +505,4 @@ procuredelta-ai/
 - [DEPLOYMENT.md](DEPLOYMENT.md): local production operation and self-hosting notes.
 
 Official procurement documents remain authoritative. Use this tool to locate and explain differences for human review, not to certify compliance, legal meaning, fraud, or corruption.
+

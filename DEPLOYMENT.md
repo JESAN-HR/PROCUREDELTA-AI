@@ -13,3 +13,11 @@ Keep ENABLE_CLOUD_AI unset or false for a public prototype. There are no cloud c
 localStorage is scoped to the origin: changing domain, protocol, or port creates a separate workspace. The app is not backed up or synchronized. Export JSON before changing origins or clearing storage.
 
 No deployed URL has been created or verified. The included server AI route means this setup is a Next.js Node deployment, not a static-export deployment.
+
+## October 23 upgrade: OCR and reviewed sharing
+
+For OCR on a fresh install, run `npm run setup:ocr` before building. On a host with build-time internet access, an install command can be `npm ci && npm run setup:ocr`. OCR uses generated same-origin assets; without them, ordinary text PDFs still work and enabling OCR explains the missing setup. Check hosting asset limits; OCR language/worker assets add tens of megabytes. No account or paid service is required by this setup.
+
+The optional Ollama adapter points to loopback on the application server. It is suitable for a local/self-hosted process where Ollama is running, not a connection from Vercel to a model on your personal PC. Keep both optional model modes disabled unless configured deliberately.
+
+Reviewed HTML downloads can be shared or hosted separately. They contain quotations and user-entered document identities. Export does not automatically publish documents or create a shared public dashboard.

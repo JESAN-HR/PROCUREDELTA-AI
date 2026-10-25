@@ -13,3 +13,13 @@
 ## Longer walkthrough
 
 Review missing-field warnings and the complete-replacement checkbox. Try a partial amendment with only a deadline: other fields become uncertain. Try conflicting.txt. Correct inputs, rerun, search History, inspect source documents, delete a document and verify that its linked reports disappear. Show Security & privacy and clear local data after the demonstration. Optional AI is not required for the pitch.
+
+## Updated messy-document demonstration
+
+1. Open New analysis and upload `public/fixtures/messy-original-tender.pdf` and `public/fixtures/messy-amendment-notice.pdf`.
+2. Leave complete replacement unchecked and analyze.
+3. Show six material findings, expand the delivery clause and certification deletion instructions, and show the unchanged budget/payment context.
+4. Mark the report reviewed only after inspecting the evidence; download the standalone HTML copy.
+5. In History, expand the procurement timeline and demonstrate comparison with another amendment against the original.
+
+For a single-document brief, choose that analysis mode and upload only the original. For OCR, prepare assets once with `npm run setup:ocr`, enable the checkbox, and upload `public/fixtures/scanned-fictional.pdf`. Explain that OCR, deterministic comparison and optional model interpretation are distinct operations. Do not claim that the small synthetic evaluation proves broad real-world accuracy.

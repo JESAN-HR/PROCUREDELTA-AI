@@ -1230,3 +1230,19 @@ footer b {
     display: none;
   }
 }
+select {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.card h4 {
+  font-size: 13px;
+}
+details small {
+  color: var(--muted);
+}

@@ -28,6 +28,7 @@ import {
 import { diffWords } from "diff";
 import {
   compare,
+  createBrief,
   makeDocument,
   originalDemo,
   revisedDemo,
@@ -38,6 +39,9 @@ import {
 } from "@/lib/engine";
 import { readPdf } from "@/lib/pdf";
 import { emptyStore, readStore, writeStore, type Store } from "@/lib/storage";
+import OptionalAi from "./optional-ai";
+import { ReportReview, Timelines } from "./report-tools";
+import { banglaLabels, searchableReport } from "@/lib/reports";
 const nav = [
   ["dashboard", "Overview", LayoutDashboard],
   ["analyze", "New analysis", Plus],
@@ -51,7 +55,15 @@ const resources = [
   ["security", "Security & privacy", ShieldCheck],
   ["docs", "Documentation", BookOpen],
 ] as const;
-function Evidence({ fact, doc }: { fact?: Fact; doc: Document }) {
+function Evidence({
+  fact,
+  doc,
+  alternate,
+}: {
+  fact?: Fact;
+  doc: Document;
+  alternate?: Document;
+}) {
   return (
     <div className="evidence">
       {fact ? (
@@ -59,8 +71,9 @@ function Evidence({ fact, doc }: { fact?: Fact; doc: Document }) {
           <blockquote key={i}>
             <p>“{e.quote}”</p>
             <cite>
-              {doc.title} ·{" "}
+              {(e.documentId === alternate?.id ? alternate : doc).title} ·{" "}
               {e.page ? `Page ${e.page}` : "Text excerpt · no page citation"}
+              {e.clause ? ` · Clause ${e.clause}` : ""}
             </cite>
           </blockquote>
         ))
@@ -80,13 +93,15 @@ function InputPanel({
   side: string;
 }) {
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [ocr, setOcr] = useState(false),
+    [ocrProgress, setOcrProgress] = useState("");
   async function upload(file?: File) {
     if (!file) return;
     setBusy(true);
     setError("");
     try {
-      const pages = await readPdf(file);
+      const pages = await readPdf(file, { ocr, progress: setOcrProgress });
       setDoc({ ...doc, title: file.name, pages, kind: "pdf", edited: false });
     } catch (e) {
       setError(e instanceof Error ? e.message : "PDF could not be read.");
@@ -110,6 +125,15 @@ function InputPanel({
         </div>
         <span className="number">{side === "Original" ? "01" : "02"}</span>
       </div>
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={ocr}
+          onChange={(e) => setOcr(e.target.checked)}
+        />{" "}
+        Enable local English + Bangla OCR for image-only pages (up to 10 pages)
+      </label>
+      {busy && <p role="status">{ocrProgress || "Extracting document…"}</p>}
       <label
         className="dropzone"
         onDragOver={(e) => e.preventDefault()}
@@ -134,6 +158,12 @@ function InputPanel({
       {error && (
         <p role="alert" className="error">
           {error}
+        </p>
+      )}
+      {doc.pages.some((p) => p.ocr) && (
+        <p className="warning">
+          OCR-derived text. Review recognition errors before analyzing. Page
+          references identify the scanned page, not verified wording.
         </p>
       )}
       <label>
@@ -211,8 +241,8 @@ export default function Workspace({ route }: { route: string }) {
     [revised, setRevised] = useState(() => makeDocument("", "Revised notice")),
     [complete, setComplete] = useState(false),
     [progress, setProgress] = useState(""),
-    [ai, setAi] = useState(""),
-    [fictional, setFictional] = useState(false);
+    [single, setSingle] = useState(false),
+    [bangla, setBangla] = useState(false);
   useEffect(() => {
     /* Browser-only hydration of the persisted workspace after SSR. */
     try {
@@ -239,6 +269,7 @@ export default function Workspace({ route }: { route: string }) {
   const report =
     store.reports.find((r) => r.id === store.activeId) ?? store.reports[0];
   function demo() {
+    setSingle(false);
     setOriginal(
       makeDocument(originalDemo, "Fictional road equipment · original"),
     );
@@ -251,7 +282,9 @@ export default function Workspace({ route }: { route: string }) {
     setProgress("Reading source text…");
     await new Promise((r) => setTimeout(r, 150));
     try {
-      const result = compare(original, revised, complete);
+      const result = single
+        ? createBrief(original)
+        : compare(original, revised, complete);
       setProgress("Comparing fields and linking evidence…");
       await new Promise((r) => setTimeout(r, 200));
       if (
@@ -262,7 +295,7 @@ export default function Workspace({ route }: { route: string }) {
               (d) => d.id !== original.id && d.id !== revised.id,
             ),
             original,
-            revised,
+            ...(single ? [] : [revised]),
           ],
           reports: [result, ...store.reports],
           activeId: result.id,
@@ -313,33 +346,15 @@ export default function Workspace({ route }: { route: string }) {
     a.click();
     URL.revokeObjectURL(url);
   }
-  async function requestAi() {
-    if (!report) return;
-    setAi("Requesting optional AI interpretation…");
-    try {
-      const response = await fetch("/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          original: report.original,
-          revised: report.revised,
-          fictional,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      setAi(JSON.stringify(data.result, null, 2));
-    } catch (e) {
-      setAi(e instanceof Error ? e.message : "AI unavailable.");
-    }
-  }
   const title =
     route === "home"
       ? "Procurement, in plain sight."
       : route === "analyze"
         ? "Understand what changed."
         : route === "comparison"
-          ? "Change transparency report"
+          ? report?.mode === "brief"
+            ? "Procurement brief"
+            : "Change transparency report"
           : route === "dashboard"
             ? "Your transparency workspace"
             : route === "documents"
@@ -578,6 +593,25 @@ export default function Workspace({ route }: { route: string }) {
           )}
           {route === "analyze" && (
             <>
+              <div className="card">
+                <label>
+                  Analysis mode
+                  <select
+                    aria-label="Analysis mode"
+                    value={single ? "brief" : "comparison"}
+                    onChange={(e) => setSingle(e.target.value === "brief")}
+                  >
+                    <option value="comparison">
+                      Original + amendment comparison
+                    </option>
+                    <option value="brief">Single notice brief</option>
+                  </select>
+                </label>
+                <p>
+                  A revised notice is optional. Use a single notice to
+                  understand its dates, requirements, and supporting evidence.
+                </p>
+              </div>
               <div className="workflow">
                 <span className="current">
                   <b>1</b> Add documents
@@ -612,12 +646,19 @@ export default function Workspace({ route }: { route: string }) {
                   setDoc={setOriginal}
                   side="Original"
                 />
-                <InputPanel doc={revised} setDoc={setRevised} side="Revised" />
+                {!single && (
+                  <InputPanel
+                    doc={revised}
+                    setDoc={setRevised}
+                    side="Revised"
+                  />
+                )}
               </div>
               <div className="analysis-controls">
                 <label className="checkbox">
                   <input
                     type="checkbox"
+                    disabled={single}
                     checked={complete}
                     onChange={(e) => setComplete(e.target.checked)}
                   />{" "}
@@ -638,7 +679,10 @@ export default function Workspace({ route }: { route: string }) {
                     disabled={!!progress || !ready}
                     onClick={() => void analyze()}
                   >
-                    {progress || "Analyze changes"}{" "}
+                    {progress ||
+                      (single
+                        ? "Create procurement brief"
+                        : "Analyze changes")}{" "}
                     {!progress && <ArrowRight size={17} />}
                   </button>
                 </div>
@@ -647,10 +691,11 @@ export default function Workspace({ route }: { route: string }) {
               <div className="notice">
                 <CircleHelp size={19} />
                 <p>
-                  Local extraction recognizes English{" "}
-                  <strong>label: value</strong> lines. Scanned PDFs, unlabeled
-                  prose, complex tables, and legal interpretation require manual
-                  review. AI is optional and separate.
+                  Local processing recognizes supported prose, labeled fields,
+                  and explicit amendment instructions. OCR is optional and
+                  local. Complex layouts and unrecognized clauses still require
+                  review; all results are tied to supplied text, not
+                  independently verified official sources.
                 </p>
               </div>
             </>
@@ -666,14 +711,17 @@ export default function Workspace({ route }: { route: string }) {
                         : "LOCAL RULE-BASED REPORT"}
                     </span>
                     <h2>
-                      {report.revisedFields.fields.tenderTitle?.value ??
+                      {report.effectiveFields?.fields.tenderTitle?.value ??
+                        report.revisedFields.fields.tenderTitle?.value ??
                         report.revised.title}
                     </h2>
                     <p>
                       {new Date(report.createdAt).toLocaleString()} ·{" "}
-                      {report.completeReplacement
-                        ? "Complete replacement confirmed by user"
-                        : "Partial amendment / context unconfirmed"}
+                      {report.mode === "brief"
+                        ? "Single-document brief"
+                        : report.completeReplacement
+                          ? "Complete replacement confirmed by user"
+                          : "Partial amendment / context unconfirmed"}
                     </p>
                   </div>
                   <div className="actions">
@@ -689,6 +737,7 @@ export default function Workspace({ route }: { route: string }) {
                         setOriginal(report.original);
                         setRevised(report.revised);
                         setComplete(report.completeReplacement);
+                        setSingle(report.mode === "brief");
                         router.push("/analyze");
                         sessionStorage.setItem(
                           "procuredelta.edit",
@@ -696,6 +745,7 @@ export default function Workspace({ route }: { route: string }) {
                             original: report.original,
                             revised: report.revised,
                             complete: report.completeReplacement,
+                            single: report.mode === "brief",
                           }),
                         );
                       }}
@@ -722,7 +772,10 @@ export default function Workspace({ route }: { route: string }) {
                         .length
                     }
                   />
-                  <Stat label="Source documents" value={2} />
+                  <Stat
+                    label="Source documents"
+                    value={report.mode === "brief" ? 1 : 2}
+                  />
                 </div>
                 <div className="section-title">
                   <h2>
@@ -734,7 +787,7 @@ export default function Workspace({ route }: { route: string }) {
                     DOCUMENT FACTS + RULE-BASED EXPLANATIONS
                   </span>
                 </div>
-                {!report.changes.length && (
+                {report.mode !== "brief" && !report.changes.length && (
                   <div className="card">
                     <h3>No structured changes detected</h3>
                     <p>
@@ -744,13 +797,20 @@ export default function Workspace({ route }: { route: string }) {
                   </div>
                 )}
                 {report.changes.map((change, i) => (
-                  <article className="card change-card" key={change.field}>
+                  <article
+                    className="card change-card"
+                    key={`${change.field}-${i}`}
+                  >
                     <div className="change-heading">
                       <div>
                         <span className="finding-number">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        <h3>{labels[change.field]}</h3>
+                        <h3>
+                          {bangla
+                            ? banglaLabels[change.field]
+                            : labels[change.field]}
+                        </h3>
                       </div>
                       <span className={"badge " + change.kind.toLowerCase()}>
                         {change.kind}
@@ -763,13 +823,21 @@ export default function Workspace({ route }: { route: string }) {
                       </div>
                       <div>
                         <small>REVISED DOCUMENT</small>
-                        <p>{change.after?.value ?? "Not identified"}</p>
+                        <p>
+                          {change.after?.value ??
+                            (change.kind === "Removed"
+                              ? "Explicitly removed; inspect instruction"
+                              : "Not identified")}
+                        </p>
                       </div>
                     </div>
                     <p className="explanation">
                       <CircleHelp size={16} />
                       {change.explanation}
                     </p>
+                    {change.method && (
+                      <p className="muted">Resolution: {change.method}</p>
+                    )}
                     <details open={route === "evidence"}>
                       <summary>
                         <ScanLine size={16} /> Inspect source evidence
@@ -778,29 +846,70 @@ export default function Workspace({ route }: { route: string }) {
                         <Evidence fact={change.before} doc={report.original} />
                         <Evidence fact={change.after} doc={report.revised} />
                       </div>
+                      {change.instruction && (
+                        <>
+                          <h4>Operative amendment instruction</h4>
+                          <Evidence
+                            fact={change.instruction}
+                            doc={report.revised}
+                          />
+                        </>
+                      )}
                     </details>
                   </article>
                 ))}
                 <section className="card">
-                  <h2>Procurement brief</h2>
+                  <div className="section-title">
+                    <h2>
+                      {bangla ? "দরপত্রের সারসংক্ষেপ" : "Procurement brief"}
+                    </h2>
+                    <button
+                      className="button secondary"
+                      onClick={() => setBangla(!bangla)}
+                    >
+                      {bangla ? "English labels" : "বাংলা শিরোনাম"}
+                    </button>
+                  </div>
+                  {bangla && (
+                    <p lang="bn">
+                      শিরোনাম বাংলায় দেখানো হচ্ছে। মূল নথির উদ্ধৃতি ও
+                      বিশ্লেষণের ভাষা অপরিবর্তিত রয়েছে। এটি স্বয়ংক্রিয় অনুবাদ
+                      নয়।
+                    </p>
+                  )}
                   <p className="muted">
-                    Extracted from the revised notice. Missing fields remain
-                    unknown; omissions in a partial amendment do not replace
-                    original conditions.
+                    Source-supported reading of the notice and resolved
+                    amendments. Original-only conditions are labeled as carried
+                    context. Unknowns and conflicting statements require review.
                   </p>
                   <div className="brief-grid">
                     {Object.entries(labels).map(([key, label]) => {
-                      const fact =
-                        report.revisedFields.fields[key as keyof typeof labels];
+                      const fact = (
+                        report.effectiveFields ?? report.revisedFields
+                      ).fields[key as keyof typeof labels];
                       return (
                         <details key={key}>
                           <summary>
-                            {label}
+                            {bangla
+                              ? banglaLabels[key as keyof typeof labels]
+                              : label}
+                            {report.carriedFields?.includes(
+                              key as keyof typeof labels,
+                            ) && (
+                              <small>
+                                {" "}
+                                · Original condition / carried context
+                              </small>
+                            )}
                             <strong>
                               {fact?.value ?? "Unknown / not identified"}
                             </strong>
                           </summary>
-                          <Evidence fact={fact} doc={report.revised} />
+                          <Evidence
+                            fact={fact}
+                            doc={report.revised}
+                            alternate={report.original}
+                          />
                         </details>
                       );
                     })}
@@ -808,14 +917,30 @@ export default function Workspace({ route }: { route: string }) {
                   {[
                     ...report.originalFields.extractionWarnings,
                     ...report.revisedFields.extractionWarnings,
+                    ...(report.effectiveFields?.extractionWarnings ?? []),
                   ].map((w, i) => (
                     <p key={i} className="warning">
                       {w}
                     </p>
                   ))}
                 </section>
+                <ReportReview
+                  report={report}
+                  onReview={(value) =>
+                    save({
+                      ...store,
+                      reports: store.reports.map((r) =>
+                        r.id === report.id ? { ...r, reviewed: value } : r,
+                      ),
+                    })
+                  }
+                />
                 <section className="card">
-                  <h2>Full text difference</h2>
+                  <h2>
+                    {report.mode === "brief"
+                      ? "Source text"
+                      : "Full text difference"}
+                  </h2>
                   <p className="muted">
                     Text edits only; highlights do not establish legal meaning.{" "}
                     <del>Removed text</del> · <ins>Added text</ins>
@@ -835,36 +960,7 @@ export default function Workspace({ route }: { route: string }) {
                     )}
                   </div>
                 </section>
-                <section className="card">
-                  <h2>Optional AI interpretation</h2>
-                  <p>
-                    Requires an explicitly configured Gemini free-tier project.
-                    This sends both texts to Google. Only fictional or
-                    non-sensitive test data is allowed. AI output is unverified
-                    interpretation, even when quotes match.
-                  </p>
-                  <label className="checkbox">
-                    <input
-                      type="checkbox"
-                      checked={fictional}
-                      onChange={(e) => setFictional(e.target.checked)}
-                    />{" "}
-                    I confirm these are fictional or non-sensitive test
-                    documents and consent to sending them.
-                  </label>
-                  <button
-                    className="button secondary"
-                    disabled={!fictional}
-                    onClick={() => void requestAi()}
-                  >
-                    Request optional AI analysis
-                  </button>
-                  {ai && (
-                    <pre className="ai-output" role="status">
-                      {ai}
-                    </pre>
-                  )}
-                </section>
+                <OptionalAi key={report.id} report={report} />
               </>
             ) : (
               <Empty title="Your first comparison starts with two documents." />
@@ -949,7 +1045,9 @@ export default function Workspace({ route }: { route: string }) {
                     />
                     <Stat
                       label="Comparisons performed"
-                      value={store.reports.length}
+                      value={
+                        store.reports.filter((r) => r.mode !== "brief").length
+                      }
                     />
                     <Stat label="Recorded findings" value={totalChanges} />
                     <Stat
@@ -1002,15 +1100,29 @@ export default function Workspace({ route }: { route: string }) {
                 </h2>
                 <span className="muted">Stored on this device</span>
               </div>
+              <Timelines
+                reports={store.reports}
+                onOpen={open}
+                onAmend={(r) => {
+                  sessionStorage.setItem(
+                    "procuredelta.edit",
+                    JSON.stringify({
+                      original: r.original,
+                      revised: makeDocument("", "New amendment"),
+                      complete: false,
+                      single: false,
+                    }),
+                  );
+                  router.push("/analyze");
+                }}
+              />
               <SearchBox query={query} setQuery={setQuery} />
               {!store.reports.length ? (
                 <Empty title="Your work will tell the story." />
               ) : (
                 store.reports
                   .filter((r) =>
-                    `${r.original.title} ${r.revised.title}`
-                      .toLowerCase()
-                      .includes(query.toLowerCase()),
+                    searchableReport(r).includes(query.toLowerCase()),
                   )
                   .map((r) => (
                     <div className="card history-row" key={r.id}>
@@ -1067,6 +1179,7 @@ export default function Workspace({ route }: { route: string }) {
         setOriginal={setOriginal}
         setRevised={setRevised}
         setComplete={setComplete}
+        setSingle={setSingle}
       />
     </div>
   );
@@ -1076,11 +1189,13 @@ function EditLoader({
   setOriginal,
   setRevised,
   setComplete,
+  setSingle,
 }: {
   route: string;
   setOriginal: (d: Document) => void;
   setRevised: (d: Document) => void;
   setComplete: (v: boolean) => void;
+  setSingle: (v: boolean) => void;
 }) {
   useEffect(() => {
     if (route === "analyze") {
@@ -1091,12 +1206,13 @@ function EditLoader({
           setOriginal(data.original);
           setRevised(data.revised);
           setComplete(data.complete);
+          setSingle(data.single ?? false);
         } finally {
           sessionStorage.removeItem("procuredelta.edit");
         }
       }
     }
-  }, [route, setOriginal, setRevised, setComplete]);
+  }, [route, setOriginal, setRevised, setComplete, setSingle]);
   return null;
 }
 function Stat({ label, value }: { label: string; value: number }) {
@@ -1151,19 +1267,19 @@ function Info({ route, clear }: { route: string; clear: () => void }) {
       ? [
           [
             "01 · Ingestion",
-            "Text-based PDFs are parsed in your browser using a patched PDF.js release. Exact text and actual page numbers are retained. Pasted and corrected text has no page attribution. No OCR is implemented.",
+            "Text-based PDFs are parsed in your browser using a patched PDF.js release. Exact text and actual page numbers are retained. Pasted and corrected text has no page attribution. Optional Tesseract OCR runs locally on image-only pages; verify the recognized text.",
           ],
           [
             "02 · Deterministic extraction",
-            "English label: value rules recognize tender fields. Dates and simple experience durations are normalized conservatively. Multiple conflicting values are flagged. This is text processing, not AI inference.",
+            "English prose and label patterns recognize dates, amounts, experience, delivery and eligibility terms. Clause-linked amendment instructions match old values before applying replacements. Bengali labels and digits are supported; general bilingual understanding is not claimed. This is deterministic processing, not model inference.",
           ],
           [
             "03 · Comparison and evidence",
-            "Structured fields are compared alongside a full word diff. Missing fields remain uncertain unless you confirm a complete replacement. Quotations come directly from the source text. Legal meaning is never certified.",
+            "Structured fields and explicit amendment instructions are compared alongside a word diff. Missing fields remain uncertain unless a complete replacement or unchanged-terms statement supplies context. Unclassified operative wording is queued for human review. Quotations remain exact; legal meaning is never certified.",
           ],
           [
             "04 · Persistence and optional AI",
-            "Validated records are saved in browser localStorage with a versioned key. A storage adapter can later target Postgres. Gemini is a separate server-side, opt-in feature with schema validation and exact-quote checks; no model runs locally.",
+            "Validated records are saved in browser localStorage with a versioned key. A storage adapter can later target Postgres. Optional Gemini or a separately installed Ollama model provides schema-validated interpretations with exact-quote checks. No model is installed or enabled by default.",
           ],
         ]
       : route === "security"
